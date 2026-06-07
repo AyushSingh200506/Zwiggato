@@ -1,0 +1,19 @@
+{
+  "name": "zwiggato",
+  "version": "1.0.0",
+  "description": "This is a food delivering app.",
+  "scripts": {
+    "start": "parcel index.html",
+    "test": "jest"
+  },
+  "author": "Ayush Singh",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel": "^2.16.3"
+  },
+  "dependencies": {
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "react-router-dom": "^6.30.3"
+  }
+}
