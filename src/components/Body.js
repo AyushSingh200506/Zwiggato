@@ -1,6 +1,8 @@
 import RestaurantCard from "./RestaurantCard";
 import { useState, useEffect } from "react";
 import Shimmer from "./Shimmer";
+import { RESTAURANT_LIST_API_URL } from "../utils/constants";
+import { Link } from "react-router-dom";
 
 const Body = () => {
     const [resList, setResList] = useState([]);
@@ -8,30 +10,29 @@ const Body = () => {
 
     const [searchText, setsearchText] = useState("");
 
-    useEffect(()=>{
+    useEffect(() => {
         fetchData();
     }, []);
 
     const fetchData = async () => {
-        const data = await fetch("https://corsproxy.io/?https://www.swiggy.com/dapi/restaurants/list/v5?lat=26.7596035&lng=83.38185130000001&is-seo-homepage-enabled=true&page_type=DESKTOP_WEB_LISTING");
+        const data = await fetch(RESTAURANT_LIST_API_URL);
         const json = await data.json();
-        console.log(json);
-        setResList( json?.data?.cards[3]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-        setFilteredResList(json?.data?.cards[3]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
-    }
-        
-    return (resList.length === 0) ? <Shimmer /> :  (
+        setResList(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+        setFilteredResList(json?.data?.cards[4]?.card?.card?.gridElements?.infoWithStyle?.restaurants);
+    };
+
+    return (resList.length === 0) ? <Shimmer /> : (
         <div className="body">
             <div className="filter">
                 <div className="search">
-                    <input className="searchbox" type="text" placeholder="Search for restaurant" value={searchText} onChange={(e) =>   setsearchText(e.target.value)} />
+                    <input className="searchbox" type="text" placeholder="Search for restaurant" value={searchText} onChange={(e) => setsearchText(e.target.value)} />
                     <button className="search-btn" onClick={() => {
                         const filteredList = resList.filter(
                             (res) => res.info.name.toLowerCase().includes(searchText.toLowerCase())
                         );
                         setFilteredResList(filteredList);
                     }}>Search</button>
-                </div>    
+                </div>
                 <button className="filter-btn"
                     onClick={() => {
                         const filteredList = resList.filter(
@@ -43,11 +44,15 @@ const Body = () => {
             </div>
             <div className="restaurant-list">
                 {
-                    filteredResList.map((restaurant) => {
-                        return <RestaurantCard
+                    filteredResList.map((restaurant) => (
+                        <Link
                             key={restaurant.info.id}
-                            resData={restaurant} />;
-                    })
+                            to={"/restaurant/" + restaurant.info.id}
+                            style={{ textDecoration: "none", color: "inherit" }}
+                        >
+                            <RestaurantCard resData={restaurant} />
+                        </Link>
+                    ))
                 }
             </div>
         </div>
